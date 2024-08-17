@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rappel d'Événements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 5px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rappel d'Événements</h1>
+    <form id="eventForm">
+        <input type="text" id="eventName" placeholder="Nom de l'événement" required>
+        <input type="datetime-local" id="eventDate" required>
+        <button type="submit">Ajouter l'événement</button>
+    </form>
+    <h2>Événements à venir :</h2>
+    <ul id="eventList"></ul>
+
+    <script>
+        let events = [];
+
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let name = document.getElementById('eventName').value;
+            let date = new Date(document.getElementById('eventDate').value);
+            
+            events.push({name, date});
+            updateEventList();
+            simulateReminders();
+
+            document.getElementById('eventName').value = '';
+            document.getElementById('eventDate').value = '';
+        });
+
+        function updateEventList() {
+            let list = document.getElementById('eventList');
+            list.innerHTML = '';
+            events.sort((a, b) => a.date - b.date);
+            events.forEach(event => {
+                let li = document.createElement('li');
+                li.textContent = `${event.name} - ${event.date.toLocaleString()}`;
+                list.appendChild(li);
+            });
+        }
+
+        function simulateReminders() {
+            events.forEach(event => {
+                let reminderTime = new Date(event.date.getTime() - 3 * 60 * 60 * 1000);
+                let now = new Date();
+                if (reminderTime > now) {
+                    setTimeout(() => {
+                        alert(`Rappel : "${event.name}" commence dans 3 heures !`);
+                    }, reminderTime - now);
+                }
+            });
+        }
+    </script>
+</body>
+  </html>
